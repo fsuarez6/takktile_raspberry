@@ -88,3 +88,7 @@ $ i2cdetect -y 1
 60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 70: -- -- -- -- -- -- -- --
 ``` 
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/fsuarez6/takktile_raspberry/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+

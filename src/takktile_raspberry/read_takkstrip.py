@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-import smbus, rospy
+import smbus, signal
 import time, os
 
 '''
@@ -15,16 +15,13 @@ class I2CInterface():
   _max__sensors = 5
   _wait_time = 2e-3
   # Initialise interface
-  def __init__(self, pi_version = 1):
-    self._bus = smbus.SMBus(pi_version)
+  def __init__(self):
+    self._bus = smbus.SMBus(I2CInterface.get_bus_number())
     self._sensors = self._get_addresses()
     self._coefficients = self._get_coefficients(self._sensors)
-    while not rospy.is_shutdown():
-      print '----------- %d' % (len(self._coefficients.keys()))
-      self.start_conversions()
-      for sensor, _coefficients in self._coefficients.items():
-        print self.get_pressure_temperature(sensor, _coefficients)
-      os.system(['clear','cls'][os.name == 'nt'])
+    
+  def get_sensors_coefficients(self):
+    return self._coefficients
   
   def _get_addresses(self):
     addresses = dict()
@@ -64,7 +61,7 @@ class I2CInterface():
           # Append the sensor _coefficients
           coefficients[sensor] = short_values
         except:
-          rospy.logerr('Failed to get the _coefficients from %d: %s' % (strip, hex(sensor)))
+          print('[ERROR] Failed to get coefficients from strip %d, sensor %s' % (strip, hex(sensor)))
         # Turn off sensor
         self._bus.read_byte(sensor)
     return coefficients
@@ -102,8 +99,43 @@ class I2CInterface():
     temp_celsius = -(temp - 498.0) / 5.35 + 25.0                   # C
     return pressure_comp, temp_celsius
   
+  @staticmethod
+  def get_pi_version():
+    "Gets the version number of the Raspberry Pi board"
+    # Courtesy quick2wire-python-api
+    # https://github.com/quick2wire/quick2wire-python-api
+    try:
+      with open('/proc/cpuinfo','r') as f:
+        for line in f:
+          if line.startswith('Revision'):
+            return 1 if line.rstrip()[-1] in ['1','2'] else 2
+    except:
+      return 0
+
+  @staticmethod
+  def get_bus_number():
+    # Gets the I2C bus number /dev/i2c#
+    return 1 if I2CInterface.get_pi_version() > 1 else 0
+
+# Functional main for checking the sensors output
+
+interrupted = False
+def signal_handler(signum, frame):
+    global interrupted
+    interrupted = True
+
 if __name__ == '__main__':
-  # TODO: Validate inputs
-  # pi_version: 0 | 1
-  rospy.init_node('read_takkstrip')
-  interface = I2CInterface()
+  signal.signal(signal.SIGINT, signal_handler)
+  takkstrip = I2CInterface()
+  while True:
+    os.system(['clear','cls'][os.name == 'nt'])
+    print '(Pressure [KPa], Temperature [C])'
+    takkstrip.start_conversions()
+    coefficients = takkstrip.get_sensors_coefficients()
+    for sensor, coeff in coefficients.items():
+      pressure, temp = takkstrip.get_pressure_temperature(sensor, coeff)
+      print 'Sensor %d: (%f, %f)' % (sensor, pressure, temp)
+    if interrupted:
+      print 'Ctrl+C received, exiting...'
+      break
+    time.sleep(50e-3)

@@ -1,15 +1,10 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(takktile_raspberry)
+project(takktile_msgs)
 
 find_package(catkin REQUIRED COMPONENTS
-  message_generation
-  roscpp
-  rospy
-  std_msgs
   geometry_msgs
+  std_msgs
 )
-
-catkin_python_setup()
 
 add_message_files(FILES 
   Contact.msg

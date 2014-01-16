@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package>
+  <name>takktile_raspberry</name>
+  <description>ROS Nodes for an Rasberry Pi to interface with the TakkTile TakkStrip</description>
+
+  <version>0.1.0</version>
+  <maintainer email="fsuarez6@gmail.com">Francisco Suarez-Ruiz</maintainer>
+  <license>BSD</license>
+  <url type="website">https://github.com/fsuarez6/takktile_raspberry</url>
+  <url type="repository">https://github.com/fsuarez6/takktile_raspberry</url>
+  <author>Francisco Suarez-Ruiz</author>
+  
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <run_depend>roscpp</run_depend>
+  
+  <build_depend>rospy</build_depend>  
+  <run_depend>rospy</run_depend>
+  
+  <build_depend>takktile_msgs</build_depend>  
+  <run_depend>takktile_msgs</run_depend>
+  
+</package>

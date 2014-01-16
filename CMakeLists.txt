@@ -15,6 +15,7 @@ add_message_files(FILES
   Contact.msg
   Info.msg
   Raw.msg
+  RobotiqTouch.msg
   Touch.msg
 )
 

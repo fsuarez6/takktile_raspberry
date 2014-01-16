@@ -20,8 +20,54 @@ class I2CInterface():
     self._sensors = self._get_addresses()
     self._coefficients = self._get_coefficients(self._sensors)
     
+  def start_conversions(self):
+    # Switch on all the sensors
+    self._bus.write_quick(self._sensor_all_on)
+    # Start data conversion
+    self._bus.write_i2c_block_data(self._attiny_addr, 0x12, [0x01])
+    self._bus.read_byte(self._sensor_all_on)
+    time.sleep(self._wait_time)
+  
+  def get_pressure_temperature(self, sensor, _coefficients):
+    # Select sensor
+    self._bus.write_quick(sensor)
+    # Request P/T data
+    try:
+      block = self._bus.read_i2c_block_data(self._attiny_addr, 0x00)[:4]
+    except:
+      return (0,0)
+    # Turn off sensor
+    self._bus.read_byte(sensor)
+    # Calculate pressure & temperature
+    data = []
+    for i in xrange(0, len(block), 2):
+      value = (block[i] << 8) | block[i+1]
+      if(value >= 2**15):
+        value -= 2**16
+      data.append(value)
+    pressure = float(data[0]) / 64.0
+    temp = float(data[1]) / 64.0
+    [a0, b1, b2, c12] = _coefficients
+    pressure_comp = a0 + (b1 + c12 * temp) * pressure + b2 * temp
+    pressure_kpa = ((65.0 / 1023.0) * pressure_comp) + 50.0        # kPa
+    temp_celsius = -(temp - 498.0) / 5.35 + 25.0                   # C
+    return pressure_comp, temp_celsius
+    
   def get_sensors_coefficients(self):
     return self._coefficients
+  
+  def alive(self):
+    return self._coefficients.keys()
+    
+  def get_all_sensors_data(self):
+    pressure = []
+    temp = []
+    self.start_conversions()
+    for sensor, coeff in self._coefficients.items():
+      p, t = self.get_pressure_temperature(sensor, coeff)
+      pressure.append(p)
+      temp.append(t)
+    return pressure, temp
   
   def _get_addresses(self):
     addresses = dict()
@@ -65,39 +111,6 @@ class I2CInterface():
         # Turn off sensor
         self._bus.read_byte(sensor)
     return coefficients
-  
-  def start_conversions(self):
-    # Switch on all the sensors
-    self._bus.write_quick(self._sensor_all_on)
-    # Start data conversion
-    self._bus.write_i2c_block_data(self._attiny_addr, 0x12, [0x01])
-    self._bus.read_byte(self._sensor_all_on)
-    time.sleep(self._wait_time)
-  
-  def get_pressure_temperature(self, sensor, _coefficients):
-    # Select sensor
-    self._bus.write_quick(sensor)
-    # Request P/T data
-    try:
-      block = self._bus.read_i2c_block_data(self._attiny_addr, 0x00)[:4]
-    except:
-      return (0,0)
-    # Turn off sensor
-    self._bus.read_byte(sensor)
-    # Calculate pressure & temperature
-    data = []
-    for i in xrange(0, len(block), 2):
-      value = (block[i] << 8) | block[i+1]
-      if(value >= 2**15):
-        value -= 2**16
-      data.append(value)
-    pressure = float(data[0]) / 64.0
-    temp = float(data[1]) / 64.0
-    [a0, b1, b2, c12] = _coefficients
-    pressure_comp = a0 + (b1 + c12 * temp) * pressure + b2 * temp
-    pressure_kpa = ((65.0 / 1023.0) * pressure_comp) + 50.0        # kPa
-    temp_celsius = -(temp - 498.0) / 5.35 + 25.0                   # C
-    return pressure_comp, temp_celsius
   
   @staticmethod
   def get_pi_version():

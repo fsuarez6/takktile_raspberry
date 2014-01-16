@@ -1,7 +1,22 @@
 TakkStrip with Raspberry Pi
 ==================
 
-## Setup
+ROS packages developed by the [Group of Robots and Intelligent Machines](http://www.romin.upm.es/) from the [Universidad Politécnica de Madrid](http://www.upm.es/internacional). This group is part of the [Centre for Automation and Robotics](http://www.car.upm-csic.es/) (CAR UPM-CSIC). On going development continues in the groovy-devel branch.
+
+**Maintainer:** Francisco Suárez Ruiz, [http://www.romin.upm.es/fsuarez/](http://www.romin.upm.es/fsuarez/)
+
+### Documentation
+
+  * See the installation instructions below.
+  * This repository.
+  * Throughout the various files in the packages.
+  * For questions, please use [http://answers.ros.org](http://answers.ros.org)
+
+### Build Status
+
+[![Build Status](https://travis-ci.org/fsuarez6/takktile_raspberry.png?branch=groovy-devel)](https://travis-ci.org/fsuarez6/takktile_raspberry)
+
+## Raspberry Setup
 
 These instructions were obtain from this [instructable](http://www.instructables.com/id/Raspberry-Pi-I2C-Python/).
 
@@ -89,6 +104,54 @@ $ i2cdetect -y 1
 70: -- -- -- -- -- -- -- --
 ``` 
 
+## ROS Packages Installation
+
+### Basic Requirements
+
+  1. Install [ROS Groovy](http://wiki.ros.org/groovy/Installation/Raspbian) on Raspberry PI/Raspbian (**Installing binary packages** Recommended)
+
+### Repository Installation
+
+Go to your ROS working directory. e.g.
+```
+cd ~/catkin_ws/src
+``` 
+Use the `wstool` to install the repository
+```
+wstool init .
+wstool merge https://raw.github.com/fsuarez6/takktile_raspberry/groovy-devel/takktile_raspberry.rosinstall
+wstool update
+``` 
+Install any missing dependencies using rosdep:
+```
+rosdep update
+rosdep install --from-paths . --ignore-src --rosdistro groovy
+``` 
+Now compile your ROS workspace. e.g.
+```
+cd ~/catkin_ws && catkin_make
+``` 
+
+### Testing Installation
+
+Be sure to always source the appropriate ROS setup file, which for Hydro is done like so:
+```
+source /opt/ros/hydro/setup.bash
+``` 
+You might want to add that line to your `~/.bashrc`
+
+Try the `.launch` files in the `takktile_raspberry` package:
+```
+roslaunch takktile_raspberry robotiq_takktile.launch
+``` 
+
+## Changelog
+
+### 0.1.0 (2014-01-16)
+* Initial Release
+
+## Roadmap
+TODO
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/fsuarez6/takktile_raspberry/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 

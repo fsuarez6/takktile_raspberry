@@ -136,7 +136,7 @@ cd ~/catkin_ws && catkin_make
 
 Be sure to always source the appropriate ROS setup file, which for Hydro is done like so:
 ```
-source /opt/ros/hydro/setup.bash
+source /opt/ros/groovy/setup.bash
 ``` 
 You might want to add that line to your `~/.bashrc`
 

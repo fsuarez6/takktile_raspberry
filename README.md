@@ -118,31 +118,32 @@ cd ~/catkin_ws/src
 ``` 
 Use the `wstool` to install the repository
 ```
-wstool init .
-wstool merge https://raw.github.com/fsuarez6/takktile_raspberry/groovy-devel/takktile_raspberry.rosinstall
-wstool update
+$ sudo apt-get install python-wstool
+$ wstool init .
+$ wstool merge https://raw.github.com/fsuarez6/takktile_raspberry/groovy-devel/takktile_raspberry.rosinstall
+$ wstool update
 ``` 
 Install any missing dependencies using rosdep:
 ```
-rosdep update
-rosdep install --from-paths . --ignore-src --rosdistro groovy
+$ rosdep update
+$ rosdep install --from-paths . --ignore-src --rosdistro groovy
 ``` 
 Now compile your ROS workspace. e.g.
 ```
-cd ~/catkin_ws && catkin_make
+$ cd ~/catkin_ws && catkin_make
 ``` 
 
 ### Testing Installation
 
-Be sure to always source the appropriate ROS setup file, which for Hydro is done like so:
+Be sure to always source the appropriate ROS setup file, which for Groovy is done like so:
 ```
-source /opt/ros/groovy/setup.bash
+$ source /opt/ros/groovy/setup.bash
 ``` 
 You might want to add that line to your `~/.bashrc`
 
 Try the `.launch` files in the `takktile_raspberry` package:
 ```
-roslaunch takktile_raspberry robotiq_takktile.launch
+$ roslaunch takktile_raspberry robotiq_takktile.launch
 ``` 
 
 ## Changelog

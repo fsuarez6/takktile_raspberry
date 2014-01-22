@@ -7,12 +7,12 @@ from cStringIO import StringIO
 # TakkStrip
 from takktile_raspberry import I2CInterface
 # Messages
-from takktile_raspberry.msg import RobotiqTouch
+from takktile_msgs.msg import RobotiqTouch
 
 def nearly_equal(a,b,sig_fig=3):
   return (a==b or int(a*10**sig_fig) == int(b*10**sig_fig))
 
-class RobotiqTakktile():
+class RobotiqUDP():
   # Initialise
   def __init__(self, topic):
     self.ns = rospy.get_namespace()
@@ -51,6 +51,6 @@ class RobotiqTakktile():
 
 if __name__ == '__main__':
   # Set up node
-  topic = 'robotiq_takktile'
+  topic = 'robotiq_over_udp'
   rospy.init_node(topic, anonymous=True)
-  robotiq = RobotiqTakktile(topic)
+  robotiq = RobotiqUDP(topic)

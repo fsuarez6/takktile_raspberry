@@ -14,7 +14,7 @@ ROS packages developed by the [Group of Robots and Intelligent Machines](http://
 
 ### Build Status
 
-[![Build Status](https://travis-ci.org/fsuarez6/takktile_raspberry.png?branch=groovy-devel)](https://travis-ci.org/fsuarez6/takktile_raspberry)
+[![Build Status](https://travis-ci.org/fsuarez6/takktile_ros.png?branch=groovy-devel)](https://travis-ci.org/fsuarez6/takktile_ros)
 
 ## Raspberry Setup
 
@@ -120,7 +120,7 @@ Use the `wstool` to install the repository
 ```
 $ sudo apt-get install python-wstool
 $ wstool init .
-$ wstool merge https://raw.github.com/fsuarez6/takktile_raspberry/groovy-devel/takktile_raspberry.rosinstall
+$ wstool merge https://raw.github.com/fsuarez6/takktile_ros/groovy-devel/takktile_ros.rosinstall
 $ wstool update
 ``` 
 Install any missing dependencies using rosdep:
@@ -154,5 +154,5 @@ $ roslaunch takktile_raspberry robotiq_takktile.launch
 ## Roadmap
 TODO
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/fsuarez6/takktile_raspberry/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/fsuarez6/takktile_ros/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 

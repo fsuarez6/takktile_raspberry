@@ -11,6 +11,13 @@ from takktile_msgs.msg import RobotiqTouch
 
 def nearly_equal(a,b,sig_fig=3):
   return (a==b or int(a*10**sig_fig) == int(b*10**sig_fig))
+  
+def median(mylist):
+  sorts = sorted(mylist)
+  length = len(sorts)
+  if not length % 2:
+    return (sorts[length / 2] + sorts[length / 2 - 1]) / 2.0
+  return sorts[length / 2]
 
 class RobotiqUDP():
   # Initialise
@@ -25,32 +32,39 @@ class RobotiqUDP():
     # Set-up publishers/subscribers
     touch_pub = rospy.Publisher(topic + '/touch', RobotiqTouch)
     # Start I2C interface
-    tk = I2CInterface()
+    tk = I2CInterface(strips=3, sensors_per_strip=4)
     self.alive = tk.alive()
     num_alive = len(self.alive)
     pressure, temp = tk.get_all_sensors_data()
-    self.calibration = -np.array(pressure)
-    old = np.array([0]*num_alive)
+    cal_matrix = np.array(pressure)
+    for j in xrange(99):
+      pressure, temp = tk.get_all_sensors_data()
+      cal_matrix = np.append(cal_matrix, np.array(pressure))
+    cal_matrix.shape = (100, num_alive)
+    self.calibration = -np.median(cal_matrix, axis=0)
+    old = np.array(pressure)
     # Send sensors data as fast as possible
     touch_msg = RobotiqTouch()
     while not rospy.is_shutdown():
       pressure, temp = tk.get_all_sensors_data()
-      calibrated = np.array(pressure) + self.calibration
-      for i, value in enumerate(calibrated):
+      for i, value in enumerate(pressure):
         if nearly_equal(value, 0.0):
-          calibrated[i] = old[i]
+          pressure[i] = old[i]
+      old = np.array(pressure)
+      calibrated = np.array(pressure) + self.calibration
       touch_msg.f0 = calibrated[:step]
       touch_msg.f1 = calibrated[step:2*step]
       touch_msg.f2 = calibrated[2*step:]
-      #~ touch_pub.publish(touch_msg)
+      # Publish tactile values within ROS
+      touch_pub.publish(touch_msg)
       file_str = StringIO()
       touch_msg.serialize(file_str)
+      # Send over udp the tactile values
       self.write_socket.sendto(file_str.getvalue(), (self.write_ip, self.write_port))
-      old = np.array(calibrated)
 
 
 if __name__ == '__main__':
   # Set up node
-  topic = 'robotiq_over_udp'
+  topic = 'takktile_robotiq'
   rospy.init_node(topic, anonymous=True)
   robotiq = RobotiqUDP(topic)

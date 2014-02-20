@@ -1,0 +1,11 @@
+<launch>
+  <!-- roslaunch arguments -->
+  <arg name="ip_dst" default="127.0.0.1"/>
+  <arg name="port_dst" default="5050"/>
+  
+  <!-- spawn the robotiq_over_upd.py node -->
+  <node name="takktile_robotiq" pkg="takktile_raspberry" type="takktile_robotiq.py" respawn="false" output="screen">
+    <param name="write_ip" value="$(arg ip_dst)"/>
+    <param name="write_port" value="$(arg port_dst)"/>
+  </node>
+</launch>

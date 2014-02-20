@@ -1,6 +1,0 @@
-<launch>
-  <node name="robotiq_over_udp" pkg="takktile_raspberry" type="robotiq_over_udp.py" respawn="false" output="screen">
-    <param name="write_ip" value="138.100.76.119"/>
-    <param name="write_port" value="5050"/>
-  </node>
-</launch>

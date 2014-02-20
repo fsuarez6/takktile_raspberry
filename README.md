@@ -92,9 +92,9 @@ $ ls /dev/i2c*
 ``` 
 Simple test to scan the i2c bus:
 ```
-$ i2cdetect -y 1
+$ i2cdetect -y -a 1
      0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
-00:          -- -- -- -- -- -- -- -- -- -- -- -- -- 
+00: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
@@ -133,7 +133,7 @@ Now compile your ROS workspace. e.g.
 $ cd ~/catkin_ws && catkin_make
 ``` 
 
-### Testing Installation
+### Testing Installation (With ROS)
 
 Be sure to always source the appropriate ROS setup file, which for Groovy is done like so:
 ```
@@ -141,14 +141,47 @@ $ source /opt/ros/groovy/setup.bash
 ``` 
 You might want to add that line to your `~/.bashrc`
 
-Try the `.launch` files in the `takktile_raspberry` package:
+Try the `.launch` file in the `takktile_raspberry` package:
 ```
-$ roslaunch takktile_raspberry robotiq_takktile.launch
+$ roslaunch takktile_raspberry takktile_robotiq.launch ip_dst:=127.0.0.1 port_dst:=5050
+``` 
+
+You should be able to echo the tactile values within ROS running in OTHER console:
+```
+$ rostopic echo /takktile_robotiq/touch
+---
+f0: [1.404296875, -1.513671875, -0.20703125, 0.234375]
+f1: [3.0390625, 0.0, -0.0518798828125, 0.9111328125]
+f2: [0.91851806640625, 0.0, 0.823822021484375, 0.6637859344482422]
+---
+``` 
+
+Be patient, the Raspberry Pi may take a while
+
+### Testing Installation (Without ROS)
+
+If you don't want to use ROS you can use the `read_takkstrip` python module directly. Go to the folder `/takktile_ros/takktile_raspberry/src/takktile_raspberry` and run the following command:
+
+```
+$ python read_takkstrip.py --strips 3 --sensors_per_strip 4
+(Pressure [KPa], Temperature [C])
+Sensor 0x0: (347.248047, 24.439252)
+Sensor 0x1: (234.890625, 24.252336)
+Sensor 0x2: (266.414062, 24.626168)
+Sensor 0x3: (248.351562, 24.439252)
+Sensor 0x8: (363.914062, 24.626168)
+Sensor 0x9: (421.414062, 24.626168)
+Sensor 0xa: (489.779663, 25.186916)
+Sensor 0xb: (423.477295, 24.252336)
+Sensor 0x10: (447.142822, 25.000000)
+Sensor 0x11: (455.427246, 24.252336)
+Sensor 0x12: (507.557922, 25.186916)
+Sensor 0x13: (1201.648240, 24.065421)
 ``` 
 
 ## Changelog
 
-### 0.1.0 (2014-01-16)
+### 0.1.0 (2014-02-20)
 * Initial Release
 
 ## Roadmap

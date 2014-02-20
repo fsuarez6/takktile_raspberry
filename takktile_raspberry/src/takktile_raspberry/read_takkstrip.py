@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 import smbus, signal
-import time, os
+import time, os, argparse
 
 '''
 Mimics the arduino code found at: https://github.com/TakkTile/takktile_arduino
@@ -11,11 +11,11 @@ class I2CInterface():
   _attiny_addr = 0xC0 >> 1
   _sensor_all_on = 0x0C >> 1
   _sensor_all_off = 0x0D >> 1
-  _max_strips = 8
-  _max__sensors = 5
   _wait_time = 2e-3
   # Initialise interface
-  def __init__(self):
+  def __init__(self, strips=8, sensors_per_strip=5):
+    self._max_strips = strips
+    self._max__sensors = sensors_per_strip
     self._bus = smbus.SMBus(I2CInterface.get_bus_number())
     self._sensors = self._get_addresses()
     self._coefficients = self._get_coefficients(self._sensors)
@@ -138,8 +138,17 @@ def signal_handler(signum, frame):
     interrupted = True
 
 if __name__ == '__main__':
+  # Parse the arguments
+  parser = argparse.ArgumentParser(description='Read the takktile sensor from multiple arrays')
+  parser.add_argument('--strips', dest='strips', type=int, default=8,
+                        help='Number of strips conected to the I2C bus')
+  parser.add_argument('--sensors_per_strip', dest='sensors_per_strip', type=int, default=5,
+                        help='Number sensors per strip')
+  args = parser.parse_args()
+  # Handle the signal interruption (Ctrl+C)
   signal.signal(signal.SIGINT, signal_handler)
-  takkstrip = I2CInterface()
+  # Start the I2C interface
+  takkstrip = I2CInterface(args.strips, args.sensors_per_strip)
   while True:
     os.system(['clear','cls'][os.name == 'nt'])
     print '(Pressure [KPa], Temperature [C])'
@@ -147,8 +156,8 @@ if __name__ == '__main__':
     coefficients = takkstrip.get_sensors_coefficients()
     for sensor, coeff in coefficients.items():
       pressure, temp = takkstrip.get_pressure_temperature(sensor, coeff)
-      print 'Sensor %d: (%f, %f)' % (sensor, pressure, temp)
+      print 'Sensor %s: (%f, %f)' % (hex(sensor), pressure, temp)
     if interrupted:
       print 'Ctrl+C received, exiting...'
       break
-    time.sleep(50e-3)
+    time.sleep(100e-3)

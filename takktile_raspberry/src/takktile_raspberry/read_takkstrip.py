@@ -11,11 +11,11 @@ class I2CInterface():
   _attiny_addr = 0xC0 >> 1
   _sensor_all_on = 0x0C >> 1
   _sensor_all_off = 0x0D >> 1
-  _wait_time = 2e-3
+  _wait_time = 1.6e-3
   # Initialise interface
   def __init__(self, strips=8, sensors_per_strip=5):
     self._max_strips = strips
-    self._max__sensors = sensors_per_strip
+    self._max_sensors = sensors_per_strip
     self._bus = smbus.SMBus(I2CInterface.get_bus_number())
     self._sensors = self._get_addresses()
     self._coefficients = self._get_coefficients(self._sensors)
@@ -73,7 +73,7 @@ class I2CInterface():
     addresses = dict()
     for strip in xrange(self._max_strips):
       addresses[strip] = []
-      for sensor in xrange(self._max__sensors):
+      for sensor in xrange(self._max_sensors):
         # Calculate the address
         address = ((strip << 4) + 2 * sensor)  >> 1
         time.sleep(self._wait_time)

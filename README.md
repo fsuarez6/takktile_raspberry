@@ -104,6 +104,25 @@ $ i2cdetect -y -a 1
 70: -- -- -- -- -- -- -- --
 ``` 
 
+### Increasing the I2C Baud Rate
+
+The I2C driver accepts an option - baudrate - which defines the default communication speed for the i2c bus. The default setting is 100000 (Hz).
+
+To change the baudrate you can specify it as an option to modprobe:
+``` 
+$ sudo modprobe -r i2c_bcm2708
+$ modprobe i2c_bcm2708 baudrate=375000
+```  
+
+If you want to make that change persistent use this command:
+```  
+$ sudo bash -c "echo options i2c_bcm2708 baudrate=375000 > /etc/modprobe.d/i2c.conf"
+```  
+
+375 KHz is the maximum value that I have managed to use with the `smbus` library and the takktile sensors.
+
+Increasing the baud rate from 100 to 375 KHz increases the UDP rate from 20 to 50 Hz in our setup (12 sensors = 3 strips, 4 sensors per strip).
+
 ## ROS Packages Installation
 
 ### Basic Requirements
@@ -160,7 +179,7 @@ Be patient, the Raspberry Pi may take a while
 
 ### Testing Installation (Without ROS)
 
-If you don't want to use ROS you can use the `read_takkstrip` python module directly. Go to the folder `/takktile_ros/takktile_raspberry/src/takktile_raspberry` and run the following command:
+If you don't want to use ROS you can use the `read_takkstrip` python module directly. Go to the folder `/takktile_ros/takktile_raspberry/src/takktile_raspberry` and run:
 
 ```
 $ python read_takkstrip.py --strips 3 --sensors_per_strip 4
@@ -183,9 +202,6 @@ Sensor 0x13: (1201.648240, 24.065421)
 
 ### 0.1.0 (2014-02-20)
 * Initial Release
-
-## Roadmap
-TODO
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/fsuarez6/takktile_ros/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 

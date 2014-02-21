@@ -5,19 +5,10 @@ import numpy as np
 import socket, struct
 from cStringIO import StringIO
 # TakkStrip
-from takktile_raspberry import I2CInterface
+import takktile_raspberry as rpi
+
 # Messages
 from takktile_msgs.msg import RobotiqTouch
-
-def nearly_equal(a,b,sig_fig=3):
-  return (a==b or int(a*10**sig_fig) == int(b*10**sig_fig))
-  
-def median(mylist):
-  sorts = sorted(mylist)
-  length = len(sorts)
-  if not length % 2:
-    return (sorts[length / 2] + sorts[length / 2 - 1]) / 2.0
-  return sorts[length / 2]
 
 class RobotiqUDP():
   # Initialise
@@ -32,7 +23,7 @@ class RobotiqUDP():
     # Set-up publishers/subscribers
     touch_pub = rospy.Publisher(topic + '/touch', RobotiqTouch)
     # Start I2C interface
-    tk = I2CInterface(strips=3, sensors_per_strip=4)
+    tk = rpi.I2CInterface(strips=3, sensors_per_strip=4)
     self.alive = tk.alive()
     num_alive = len(self.alive)
     pressure, temp = tk.get_all_sensors_data()
@@ -48,7 +39,7 @@ class RobotiqUDP():
     while not rospy.is_shutdown():
       pressure, temp = tk.get_all_sensors_data()
       for i, value in enumerate(pressure):
-        if nearly_equal(value, 0.0):
+        if rpi.nearly_equal(value, 0.0):
           pressure[i] = old[i]
       old = np.array(pressure)
       calibrated = np.array(pressure) + self.calibration

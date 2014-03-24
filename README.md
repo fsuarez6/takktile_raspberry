@@ -203,5 +203,3 @@ Sensor 0x13: (1201.648240, 24.065421)
 ### 0.1.0 (2014-02-20)
 * Initial Release
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/fsuarez6/takktile_ros/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-

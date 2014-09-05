@@ -5,7 +5,7 @@ import numpy as np
 import socket, struct
 from cStringIO import StringIO
 # TakkStrip
-import takktile_raspberry as rpi
+import takktile_interface as rpi
 
 # Messages
 from takktile_msgs.msg import RobotiqTouch

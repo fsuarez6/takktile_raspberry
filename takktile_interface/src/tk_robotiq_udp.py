@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-import takktile_raspberry as rpi
+import takktile_interface as rpi
 import math, argparse, signal
 import numpy as np
 # Sockets

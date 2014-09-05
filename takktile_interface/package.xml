@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>takktile_raspberry</name>
+  <name>takktile_interface</name>
   <description>ROS Nodes for an Rasberry Pi to interface with the TakkTile TakkStrip</description>
 
   <version>0.1.0</version>

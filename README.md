@@ -139,7 +139,7 @@ Use the `wstool` to install the repository
 ```
 $ sudo apt-get install python-wstool
 $ wstool init .
-$ wstool merge https://raw.github.com/fsuarez6/takktile_ros/groovy-devel/takktile_ros.rosinstall
+$ wstool merge https://raw.github.com/fsuarez6/takktile_raspberry/groovy-devel/takktile_raspberry.rosinstall
 $ wstool update
 ``` 
 Install any missing dependencies using rosdep:
@@ -160,9 +160,9 @@ $ source /opt/ros/groovy/setup.bash
 ``` 
 You might want to add that line to your `~/.bashrc`
 
-Try the `.launch` file in the `takktile_raspberry` package:
+Try the `.launch` file in the `takktile_interface` package:
 ```
-$ roslaunch takktile_raspberry takktile_robotiq.launch ip_dst:=127.0.0.1 port_dst:=5050
+$ roslaunch takktile_interface takktile_robotiq.launch ip_dst:=127.0.0.1 port_dst:=5050
 ``` 
 
 You should be able to echo the tactile values within ROS running in OTHER console:
@@ -179,10 +179,10 @@ Be patient, the Raspberry Pi may take a while
 
 ### Testing Installation (Without ROS)
 
-If you don't want to use ROS you can use the `read_takkstrip` python module directly. Go to the folder `/takktile_ros/takktile_raspberry/src/takktile_raspberry` and run:
+If you don't want to use ROS you can use the `takkstrip` python module directly. Go to the folder `/takktile_raspberry/takktile_interface/src/takktile_interface` and run:
 
 ```
-$ python read_takkstrip.py --strips 3 --sensors_per_strip 4
+$ python takkstrip.py --strips 3 --sensors_per_strip 4
 (Pressure [KPa], Temperature [C])
 Sensor 0x0: (347.248047, 24.439252)
 Sensor 0x1: (234.890625, 24.252336)

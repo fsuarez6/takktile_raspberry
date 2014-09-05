@@ -8,6 +8,7 @@ compiler:
 before_install: # Use this to prepare the system to install prerequisites or dependencies
   # Define some config vars
   - export ROS_DISTRO=groovy
+  - export PACKAGE_NAME=takktile_raspberry
   - export CI_SOURCE_PATH=$(pwd)
   - echo "Testing branch $TRAVIS_BRANCH "
   - pwd
@@ -27,10 +28,10 @@ install: # Use this to install any prerequisites or dependencies necessary to ru
   - cd ~/catkin_ws/src
   - wstool init .
   # Download non-debian stuff
-  - wstool merge https://raw.github.com/fsuarez6/takktile_ros/$TRAVIS_BRANCH/takktile_ros.rosinstall
+  - wstool merge https://raw.github.com/fsuarez6/$PACKAGE_NAME/$TRAVIS_BRANCH/$PACKAGE_NAME.rosinstall
   - wstool update
   # Delete the takktile_ros.rosinstall version of the repo and use the one of the branch we are testing
-  - rm -rf takktile_ros/
+  - rm -rf $PACKAGE_NAME/
   - ln -s $CI_SOURCE_PATH . # Link the repo we are testing to the new workspace
   - cd ../
   # Install ros dependencies

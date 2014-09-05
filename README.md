@@ -14,7 +14,7 @@ ROS packages developed by the [Group of Robots and Intelligent Machines](http://
 
 ### Build Status
 
-[![Build Status](https://travis-ci.org/fsuarez6/takktile_ros.png?branch=groovy-devel)](https://travis-ci.org/fsuarez6/takktile_ros)
+[![Build Status](https://travis-ci.org/fsuarez6/takktile_raspberry.png?branch=groovy-devel)](https://travis-ci.org/fsuarez6/takktile_raspberry)
 
 ## Raspberry Setup
 
